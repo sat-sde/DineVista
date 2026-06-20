@@ -1,0 +1,83 @@
+<html lang="en">
+<%- include("./partials/head.ejs") %>
+
+<body>
+    <%- include("./partials/links.ejs") %>
+    <%if (success.length>0) { %>
+        <div class="alert alert-success">
+          <%= success %>
+        </div>
+    <% }%>
+    <%if (err.length>0) { %>
+        <div class="alert alert-danger">
+          <%= err %>
+        </div>
+      <% } %>
+    <section class="Profile-Box">
+        <div class="Profile-Info">
+            <h1>User Profile</h1>
+            <ion-icon name="person-circle-outline"></ion-icon>
+            <p><strong>First Name: </strong><%=first_name%></p>
+            <p><strong>Last Name: </strong><%=last_name%></p>
+            <p><strong>Email: </strong><%=email%></p>
+        </div>
+    </section>
+    <h1 class="Order-Page History">Order History</h1>
+    <div class="Center-Box">
+      <div class="Previous-Orders"> 
+        <% p_orders.reverse() %>
+        <% for (var i = 0; i < p_orders.length; i++) { %>
+          <% let Order = p_orders[i] %>
+          <table class="table">
+              <thead>
+                <tr>
+                  <% let formatDate= Order.date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }); %>
+                  <td colspan="5">Purchased On : <%=formatDate%></td>
+                </tr>
+                <tr>
+                    <th scope="col" class="Index-Head">#</th>
+                    <th scope="col">Item Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Net Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% let Products = Order.items %>
+                  <% for(let i = 0; i < Products.length; i++){
+                      let product = Products[i];  
+                  %>
+                      <tr>
+                          <th scope="row" class="Index-Head">
+                              <%= i+1%>
+                          </th>
+                          <td>
+                              <%= product.name%>
+                          </td>
+                          <td>
+                              $ <%= product.price%>
+                          </td>
+                          <td>
+                              <%= product.qty%>
+                          </td>
+                          <td>
+                              $ <%= product.price*product.qty%>
+                          </td>
+                      </tr>
+                      <%}%>
+                      <tfoot>
+                          <tr>
+                              <td colspan="4">Total Price: </td>
+                              <td>
+                                  $ <%=Order.totalPrice%>
+                              </td>
+                          </tr>
+                      </tfoot>
+                </tbody>
+            </table>
+          <%}%>
+      </div>
+    </div>
+    <script type="module" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.esm.js"></script>
+</body>
+</html>

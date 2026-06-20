@@ -1,0 +1,20 @@
+<nav class="Menu-Extra">
+    <div class="site-title">
+        <a href="/"><h1>DineVista</h1></a>
+    </div>
+    <% var search = search || ''; %>
+    <% if (search == true) { %>
+    <div class="search-bar">
+        <ion-icon name="search-outline"></ion-icon>
+        <form action="/Menu" method="POST">
+            <input type="text" placeholder="Quick Search" id="search" name="search">
+        </form>
+    </div>
+    <% } %>
+</nav>
+<ul class="Links">
+    <li><a href="/User/Profile">User Profile</a></li>
+    <li><a href="/Menu">Menu</a></li>
+    <li><a href="/User/Order">Cart</a></li>
+    <li><a href="/Logout">Logout</a></li>
+</ul>

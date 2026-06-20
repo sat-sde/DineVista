@@ -1,0 +1,20 @@
+<html lang="en">
+<%- include("./partials/head.ejs") %>
+
+<body>
+  <%- include("./partials/links.ejs") %>
+  <div class="payment-cancel-page">
+      <div class="cancel-box">
+          <ion-icon name="close-circle-outline" style="font-size:80px; color:#e74c3c;"></ion-icon>
+          <h2>Payment Cancelled</h2>
+          <p>Your payment was not completed. No charges were made.</p>
+          <p>Your cart items are still saved — you can try again whenever you're ready.</p>
+          <div class="cancel-actions">
+              <a href="/User/Order" class="btn-return">Return to Cart</a>
+              <a href="/Menu" class="btn-menu">Back to Menu</a>
+          </div>
+      </div>
+  </div>
+  <script type="module" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.esm.js"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<html lang="en">
+<%- include("./partials/head.ejs") %>
+
+<body>
+  <%- include("./partials/nav.ejs") %>
+
+  <section class="Log-Sign">
+    <div class="form-box">
+        <div class="form-value">
+            <form action="/SignUp" method="post">
+                <h2>Sign Up</h2>
+                <div class="inputbox">
+                    <ion-icon name="person-outline"></ion-icon>
+                    <input type="text" name="first_name" placeholder="" required>
+                    <label>First Name</label>
+                </div>
+                <div class="inputbox">
+                    <ion-icon name="person-outline"></ion-icon>
+                    <input type="text" name="last_name" placeholder="" required>
+                    <label>Last Name</label>
+                </div>
+                <div class="inputbox">
+                    <ion-icon name="mail-outline"></ion-icon>
+                    <input type="email" name="email" placeholder="" required>
+                    <label>Email</label>
+                </div>
+                <div class="inputbox">
+                    <ion-icon name="lock-closed-outline"></ion-icon>
+                    <input type="password" name="password" placeholder="" required>
+                    <label>Password</label>
+                </div>
+                <button type="submit">Sign Up</button>
+                <div class="register">
+                    <p>Already have an account? <a href="/Login">Login</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+  </section>
+  <script type="module" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.esm.js"></script>
+</body>
+</html>

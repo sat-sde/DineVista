@@ -1,0 +1,59 @@
+<html lang="en">
+<%- include("./partials/head.ejs") %>
+
+<body>
+  <%- include("./partials/links.ejs") %>
+      
+  <%if (success.length>0) { %>
+    <div class="alert alert-success">
+      <%= success %>
+    </div>
+  <% } %>
+  <div class="Menu-List">
+    <% for (var i = 0; i < foodItems.length; i++) { %>
+        <div class="Menu-Item">
+        <img src="<%= foodItems[i].image %>" alt="<%= foodItems[i].name %>">
+        <div class="info">
+            <h3><%= foodItems[i].name %></h3>
+            <p><%= foodItems[i].desc %></p>
+        </div>
+        <div class="Price-Info">
+            <h3>Price</h3>
+            <p><%= foodItems[i].price %></p>
+            <form class="my-form" action="/Menu/Add-to-Cart" method="POST">
+              <input type="hidden" name="foodId" value="<%= foodItems[i].id %>">
+              <input type="hidden" name="foodName" value="<%= foodItems[i].name %>">
+              <input type="hidden" name="foodPrice" value="<%= foodItems[i].price %>">
+              <input type="hidden" name="foodImage" value="<%= foodItems[i].image %>">
+              <button type="button" onclick="showPopup()">Add To Cart</button>
+            </form>
+        </div>
+        </div>
+    <% } %>
+  </div>
+  <div id="popup">Added to cart!</div>
+  <script type="module" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.esm.js"></script>
+  <script>
+    function updateQueryString(event) {
+    event.preventDefault(); 
+    
+    const searchInput = document.getElementById('search');
+    let searchQuery = searchInput.value;
+    searchQuery = searchInput.value.trim();
+    
+    const newUrl = '?name=' + searchQuery;
+    window.location.search = newUrl;
+    }
+
+    function showPopup() {
+        var popup = document.getElementById("popup");
+        popup.classList.add("show");
+      setTimeout(function() {
+          popup.classList.remove("show");
+        }, 3000);
+        const form = event.target.closest('.my-form');
+        form.submit();
+      }
+    </script>
+</body>
+</html>

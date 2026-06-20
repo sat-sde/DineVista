@@ -1,0 +1,44 @@
+<html lang="en">
+<%- include("./partials/head.ejs") %>
+
+<body>
+    <%- include("./partials/links.ejs") %>
+    <h1 class="Order-Page">Order Summary</h1>
+    <% if (Products.length>0) {%>
+        <div class="Center-Box">
+            <div class="Order-List">
+                <% for (var i = 0; i < Products.length; i++) { %>
+                    <form action="/User/Order" method="POST">
+                        <div class="Order-Item">
+                        <img src="<%= Products[i].image %>" alt="<%= Products[i].name %>">
+                        <div class="info">
+                            <h3><%= Products[i].name %></h3>
+                                <input type="hidden" name="Id" value="<%= Products[i].id %>">
+                                <button type="submit" name="action" value="Add">Add item</button>
+                                <button type="submit" name="action" value="Remove">Remove item</button>
+                        </div>
+                    </form>
+                
+                    <div class="Order-price-Info">
+                        <h3>Quantity</h3>
+                        <p><%= Products[i].qty  %></p>
+                        <h3>Net Price</h3>
+                        <p>$ <%= Products[i].price * Products[i].qty  %></p>
+                    </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+        <div class="Price-summary">
+            <%= console.log(totPrice) %>
+            <p>Total Price : $ <%= totPrice %></p>
+            <form action="/User/Confirm" method="POST">
+                <button type="submit">Proceed to confirmation</button>
+            </form>
+        </div>
+
+    <% } else {%>
+        <p class="Order-Page">No Products added to Cart</p>
+    <% } %>
+</body>
+</html>

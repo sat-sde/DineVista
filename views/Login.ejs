@@ -1,0 +1,41 @@
+<html lang="en">
+<%- include("./partials/head.ejs") %>
+
+<body>
+  <%- include("./partials/nav.ejs") %>
+  <%if (err.length>0) { %>
+    <div class="alert alert-danger">
+      <%= err %>
+    </div>
+  <% } %>
+  <section class="Log-Sign">
+    <div class="form-box">
+        <div class="form-value">
+            <form action="/Login" method="post">
+                <h2>Login</h2>
+                <div class="inputbox">
+                    <ion-icon name="mail-outline"></ion-icon>
+                    <input type="email" name="email" placeholder="" required>
+                    <label>Email</label>
+                </div>
+                <div class="inputbox">
+                    <ion-icon name="lock-closed-outline"></ion-icon>
+                    <input type="password" name="password" placeholder="" required>
+                    <label>Password</label>
+                </div>
+                <div class="remember">
+                    <input type="checkbox" name="remember" value="Yes">
+                    <label>Remember Me</label>
+                </div>
+                <button type="submit">Log in</button>
+                <div class="register">
+                    <p>Don't have an account? <a href="/SignUp">Register</a></p>
+                    <p><a href="/ForgotPassword">Forgot Password?</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+  </section>
+  <script type="module" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.esm.js"></script>
+</body>
+</html>

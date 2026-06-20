@@ -1,0 +1,65 @@
+<html lang="en">
+<%- include("./partials/head.ejs") %>
+
+<body>
+    <nav class="Menu-Extra">
+        <div class="site-title">
+            <a href="/"><h1>DineVista</h1></a>
+        </div>
+    </nav>
+    <h1 class="Order-Page">Order Confirmation</h1>
+    <div class="Center-Box">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col" class="Index-Head">#</th>
+                    <th scope="col">Item Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Net Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for(let i = 0; i < Products.length; i++){
+                    let product = Products[i];  
+                %>
+                    <tr>
+                        <th scope="row" class="Index-Head">
+                            <%= i+1%>
+                        </th>
+                        <td>
+                            <%= product.name%>
+                        </td>
+                        <td>
+                            $ <%= product.price%>
+                        </td>
+                        <td>
+                            <%= product.qty%>
+                        </td>
+                        <td>
+                            $ <%= product.price*product.qty%>
+                        </td>
+                    </tr>
+                    <%}%>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4">Total Price: </td>
+                            <td>
+                                $ <%=totPrice%>
+                            </td>
+                        </tr>
+                    </tfoot>
+            </tbody>
+        </table>
+    </div>
+    <div class="Order-Confirm">
+        <button type="submit" class="Return" onclick="window.history.back()">Go Back</button>
+        <form action="/User/Confirmed" method="POST" style="display:inline;">
+            <button type="submit">Confirm (Free)</button>
+        </form>
+        <form action="/Payment/create-checkout" method="POST" style="display:inline;">
+            <button type="submit" class="stripe-btn">💳 Pay with Stripe</button>
+        </form>
+    </div>
+</body>
+</html>
