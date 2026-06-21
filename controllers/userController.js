@@ -2,22 +2,31 @@ const jwt= require('jsonwebtoken');
 const Cart=require('../models/Cart');
 const User = require("../models/User");
 
-const profile_Display = (req, res) => {
+const Order = require('../models/Order');
 
-    const first_name = req.user.first_name;
-    const last_name = req.user.last_name;
-    const email = req.user.email;
-    
-    User.findOne({email:email})
-    .then(user=>{
-      const p_orders=user.past_orders
-      res.render('Profile', { title:"Profile",first_name, last_name, email, p_orders});
-    })
-    .catch((err) =>{
-      console.log(err);
-      res.redirect('/')
-    })    
-  }
+const profile_Display = async (req, res) => {
+    try {
+        const first_name = req.user.first_name;
+        const last_name = req.user.last_name;
+        const email = req.user.email;
+        
+        const user = await User.findOne({ email: email });
+        
+        // Fetch real Order documents for tracking
+        const realOrders = await Order.find({ userId: user._id }).sort({ createdAt: -1 });
+
+        res.render('Profile', { 
+            title: "Profile",
+            first_name, 
+            last_name, 
+            email, 
+            p_orders: realOrders // Override to use real Order documents
+        });
+    } catch (err) {
+        console.log(err);
+        res.redirect('/');
+    }
+}
 
 const cart_Display =(req,res) =>{
   const cart= Cart.getCart()
@@ -59,38 +68,31 @@ const cart_Confirm = (req,res) =>{
   res.render('Confirm',{title:"Confirm", Products, totPrice})
 }
 
-const cart_Confirmed=(req,res) =>{
-  check_email=req.user.email;
-  User.findOne({email:check_email})
-  .then(user=>{
-    let cart=Cart.getCart()
-    const order={
-      items : cart.products,
-      totalPrice : cart.totalPrice,
-      date : Date.now()
-    }
-    console.log(order);
-    user.past_orders.push(order);
-    user.save()
-    .then(()=>{
-      req.flash("success","Order Placed Successfully!");
-      console.log("Order Placed Successfully!");
-      Cart.clearCart();
-      res.redirect('/User/Profile');
-    })
-    .catch((err) =>{
-      req.flash("err","Some Error Occured")
-      console.log(err);
-      res.redirect('/User/Profile')
-    })
-    
-  })
-}
 
-  module.exports={
-    profile_Display,
-    cart_Display,
-    cart_Check,
-    cart_Confirm,
-    cart_Confirmed
+const trackOrder = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const order = await Order.findOne({ _id: orderId, userId: req.user._id });
+    
+    if (!order) {
+      req.flash('err', 'Order not found');
+      return res.redirect('/User/Profile');
+    }
+    
+    res.render('orderTrack', { 
+      title: 'Track Order',
+      order: order
+    });
+  } catch (err) {
+    console.error(err);
+    res.redirect('/User/Profile');
   }
+};
+
+module.exports = {
+  profile_Display,
+  cart_Display,
+  cart_Check,
+  cart_Confirm,
+  trackOrder
+};

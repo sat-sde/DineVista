@@ -11,14 +11,16 @@ const MenuRoutes = require("./routes/menuRoutes.js");
 const AuthRoutes = require("./routes/authRoutes.js");
 const UserRoutes = require("./routes/userRoutes.js");
 const PaymentRoutes = require("./routes/paymentRoutes.js");
+const AdminRoutes = require("./routes/adminRoutes.js");
 const config = require('./config.js');
+const { setUserLocals } = require('./middleware/authMiddleware.js');
 
 // express app
 const app = express();
 
 const dbURI = config.dbURI;
 
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true, family: 4 })
 .then(() => console.log("Connected to Database"))
 .catch(err => console.log(err));
 
@@ -45,6 +47,13 @@ app.use(session({
   saveUninitialized: true,
   resave: true
 }));
+
+// Initialize Passport
+require('./config/passport');
+const passport = require('passport');
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(flash());
 
 app.use((req, res, next) => {
@@ -52,6 +61,12 @@ app.use((req, res, next) => {
   res.locals.err = req.flash('err');
   next();
 });
+
+// ─── GLOBAL: Set user state for ALL EJS views ───────────────────
+// This runs on every request. It decodes the JWT, fetches the user
+// from MongoDB, and sets res.locals.user so nav.ejs / links.ejs
+// can conditionally render the Admin Panel link.
+app.use(setUserLocals);
 
 // Homepage
 app.get('/', (req, res) => {
@@ -70,11 +85,12 @@ app.use('/User', UserRoutes);
 // Payment Routes
 app.use('/Payment', PaymentRoutes);
 
-// Admin Routes
-const AdminMenuRoutes = require('./routes/adminMenuRoutes');
-const AdminOrderRoutes = require('./routes/adminOrderRoutes');
-app.use('/admin/menu', AdminMenuRoutes);
-app.use('/admin/orders', AdminOrderRoutes);
+// Admin Routes (protected by isAdmin middleware inside the router)
+app.use('/admin', AdminRoutes);
+
+// API Routes
+const ApiOrderRoutes = require("./routes/apiOrderRoutes.js");
+app.use('/api/orders', ApiOrderRoutes);
 
 // 404 page
 app.use((req, res) => {

@@ -1,0 +1,42 @@
+<html lang="en">
+<%- include("../partials/head.ejs") %>
+
+<body>
+  <%- include("../partials/links.ejs") %>
+
+  <% if (typeof success !== 'undefined' && success && success.length > 0) { %>
+    <div class="alert alert-success"><%= success %></div>
+  <% } %>
+  <% if (typeof err !== 'undefined' && err && err.length > 0) { %>
+    <div class="alert alert-danger"><%= err %></div>
+  <% } %>
+
+  <h2>Admin Dashboard</h2>
+
+  <%- include("adminSubnav.ejs") %>
+
+  <div class="admin-card">
+    <h3>Welcome, <%= typeof user !== 'undefined' && user ? user.first_name : 'Admin' %>!</h3>
+    <p>Use the navigation above to manage your restaurant's menu items and track incoming customer orders.</p>
+  </div>
+
+  <!-- Quick Stats -->
+  <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+    <div class="admin-card" style="flex: 1; min-width: 250px; text-align: center;">
+      <h3 style="border: none; margin-bottom: 5px;">📋 Menu Items</h3>
+      <p style="font-size: 2.5em; font-weight: bold; margin: 0;"><%= typeof menuCount !== 'undefined' ? menuCount : 0 %></p>
+      <a href="/admin/menu" style="color: rgb(119, 119, 178); font-weight: 600;">Manage Menu →</a>
+    </div>
+    <div class="admin-card" style="flex: 1; min-width: 250px; text-align: center;">
+      <h3 style="border: none; margin-bottom: 5px;">📦 Total Orders</h3>
+      <p style="font-size: 2.5em; font-weight: bold; margin: 0;"><%= typeof orderCount !== 'undefined' ? orderCount : 0 %></p>
+      <a href="/admin/orders" style="color: rgb(119, 119, 178); font-weight: 600;">Manage Orders →</a>
+    </div>
+    <div class="admin-card" style="flex: 1; min-width: 250px; text-align: center;">
+      <h3 style="border: none; margin-bottom: 5px;">👥 Total Users</h3>
+      <p style="font-size: 2.5em; font-weight: bold; margin: 0;"><%= typeof userCount !== 'undefined' ? userCount : 0 %></p>
+    </div>
+  </div>
+
+</body>
+</html>

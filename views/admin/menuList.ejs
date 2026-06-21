@@ -1,0 +1,107 @@
+<html lang="en">
+<%- include("../partials/head.ejs") %>
+
+<body>
+  <%- include("../partials/links.ejs") %>
+
+  <% if (typeof success !== 'undefined' && success && success.length > 0) { %>
+    <div class="alert alert-success"><%= success %></div>
+  <% } %>
+  <% if (typeof err !== 'undefined' && err && err.length > 0) { %>
+    <div class="alert alert-danger"><%= err %></div>
+  <% } %>
+
+  <h2>Admin Panel</h2>
+
+  <%- include("adminSubnav.ejs") %>
+
+  <!-- Add Menu Item Form -->
+  <div class="admin-card">
+    <h3>Add New Menu Item</h3>
+    <form action="/admin/menu/add" method="POST" enctype="multipart/form-data">
+      <div class="admin-form-row">
+        <div class="admin-form-group">
+          <label for="item-name">Name</label>
+          <input type="text" id="item-name" name="name" placeholder="e.g. Veggie Burger" required>
+        </div>
+        <div class="admin-form-group">
+          <label for="item-price">Price ($)</label>
+          <input type="number" id="item-price" step="0.01" name="price" placeholder="e.g. 9.99" required>
+        </div>
+        <div class="admin-form-group">
+          <label for="item-category">Category</label>
+          <select id="item-category" name="category">
+            <option value="Main Course">Main Course</option>
+            <option value="Appetizers">Appetizers</option>
+            <option value="Sandwiches & Burgers">Sandwiches & Burgers</option>
+            <option value="Pizza">Pizza</option>
+            <option value="Pasta & Rice">Pasta & Rice</option>
+            <option value="Sushi">Sushi</option>
+            <option value="Salads">Salads</option>
+            <option value="Soups">Soups</option>
+            <option value="Seafood & Meats">Seafood & Meats</option>
+            <option value="Mexican">Mexican</option>
+            <option value="Indian">Indian</option>
+            <option value="Sides">Sides</option>
+            <option value="Desserts">Desserts</option>
+            <option value="Drinks">Drinks</option>
+          </select>
+        </div>
+      </div>
+      <div class="admin-form-row">
+        <div class="admin-form-group">
+          <label for="item-desc">Description</label>
+          <input type="text" id="item-desc" name="description" placeholder="A short description of the item">
+        </div>
+      </div>
+      <div class="admin-form-row">
+        <div class="admin-form-group">
+          <label for="item-image">Upload Image (Cloudinary)</label>
+          <input type="file" id="item-image" name="image" accept="image/*" style="padding: 5px; border: 1px solid #ccc; border-radius: 5px; width: 100%; background: #fff;">
+        </div>
+      </div>
+      <button type="submit" class="admin-btn admin-btn-submit">+ Add Item</button>
+    </form>
+  </div>
+
+  <!-- Menu Items List -->
+  <div class="admin-card">
+    <h3>Current Menu Items (<%= menuItems.length %>)</h3>
+    <div class="admin-table-wrapper">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (menuItems.length === 0) { %>
+            <tr><td colspan="5" class="admin-empty">No menu items yet. Add one above!</td></tr>
+          <% } %>
+          <% menuItems.forEach(item => { %>
+            <tr>
+              <td><img src="<%= item.image %>" alt="<%= item.name %>" class="admin-thumb"></td>
+              <td><strong><%= item.name %></strong><br><small style="color:#777;"><%= item.description || '' %></small></td>
+              <td><%= item.category %></td>
+              <td><strong>$<%= item.price.toFixed(2) %></strong></td>
+              <td>
+                <div class="admin-actions">
+                  <a href="/admin/menu/edit/<%= item._id %>" class="admin-btn admin-btn-edit">Edit</a>
+                  <form action="/admin/menu/delete/<%= item._id %>" method="POST" style="display:inline;" onsubmit="return confirm('Delete &quot;<%= item.name %>&quot;?');">
+                    <button type="submit" class="admin-btn admin-btn-delete">Delete</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</body>
+</html>

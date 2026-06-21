@@ -53,10 +53,7 @@
         </table>
     </div>
     <div class="Order-Confirm">
-        <button type="submit" class="Return" onclick="window.history.back()">Go Back</button>
-        <form action="/User/Confirmed" method="POST" style="display:inline;">
-            <button type="submit">Confirm (Free)</button>
-        </form>
+        <button type="button" class="Return" onclick="window.history.back()">Go Back</button>
         <form action="/Payment/create-checkout" method="POST" style="display:inline;">
             <button type="submit" class="stripe-btn">💳 Pay with Stripe</button>
         </form>

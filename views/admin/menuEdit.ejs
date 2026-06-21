@@ -1,0 +1,74 @@
+<html lang="en">
+<%- include("../partials/head.ejs") %>
+
+<body>
+  <%- include("../partials/links.ejs") %>
+
+  <% if (typeof err !== 'undefined' && err && err.length > 0) { %>
+    <div class="alert alert-danger"><%= err %></div>
+  <% } %>
+
+  <h2>Admin Panel</h2>
+
+  <%- include("adminSubnav.ejs") %>
+
+  <div class="admin-card">
+    <h3>Edit Menu Item</h3>
+    <form action="/admin/menu/edit/<%= menuItem._id %>" method="POST" enctype="multipart/form-data">
+      <div class="admin-form-row">
+        <div class="admin-form-group">
+          <label for="edit-name">Name</label>
+          <input type="text" id="edit-name" name="name" value="<%= menuItem.name %>" required>
+        </div>
+        <div class="admin-form-group">
+          <label for="edit-price">Price ($)</label>
+          <input type="number" id="edit-price" step="0.01" name="price" value="<%= menuItem.price %>" required>
+        </div>
+      </div>
+      <div class="admin-form-row">
+        <div class="admin-form-group">
+          <label for="edit-category">Category</label>
+          <select id="edit-category" name="category">
+            <option value="Main Course" <%= menuItem.category === 'Main Course' ? 'selected' : '' %>>Main Course</option>
+            <option value="Appetizers" <%= menuItem.category === 'Appetizers' ? 'selected' : '' %>>Appetizers</option>
+            <option value="Sandwiches & Burgers" <%= menuItem.category === 'Sandwiches & Burgers' ? 'selected' : '' %>>Sandwiches & Burgers</option>
+            <option value="Pizza" <%= menuItem.category === 'Pizza' ? 'selected' : '' %>>Pizza</option>
+            <option value="Pasta & Rice" <%= menuItem.category === 'Pasta & Rice' ? 'selected' : '' %>>Pasta & Rice</option>
+            <option value="Sushi" <%= menuItem.category === 'Sushi' ? 'selected' : '' %>>Sushi</option>
+            <option value="Salads" <%= menuItem.category === 'Salads' ? 'selected' : '' %>>Salads</option>
+            <option value="Soups" <%= menuItem.category === 'Soups' ? 'selected' : '' %>>Soups</option>
+            <option value="Seafood & Meats" <%= menuItem.category === 'Seafood & Meats' ? 'selected' : '' %>>Seafood & Meats</option>
+            <option value="Mexican" <%= menuItem.category === 'Mexican' ? 'selected' : '' %>>Mexican</option>
+            <option value="Indian" <%= menuItem.category === 'Indian' ? 'selected' : '' %>>Indian</option>
+            <option value="Sides" <%= menuItem.category === 'Sides' ? 'selected' : '' %>>Sides</option>
+            <option value="Desserts" <%= menuItem.category === 'Desserts' ? 'selected' : '' %>>Desserts</option>
+            <option value="Drinks" <%= menuItem.category === 'Drinks' ? 'selected' : '' %>>Drinks</option>
+          </select>
+        </div>
+      </div>
+      <div class="admin-form-row">
+        <div class="admin-form-group">
+          <label for="edit-desc">Description</label>
+          <input type="text" id="edit-desc" name="description" value="<%= menuItem.description %>">
+        </div>
+      </div>
+      <div class="admin-form-row">
+        <div class="admin-form-group">
+          <label>Current Image</label>
+          <% if (menuItem.image) { %>
+            <img src="<%= menuItem.image %>" alt="Current Image" class="admin-img-preview" style="max-width: 200px; display: block; margin-bottom: 10px; border-radius: 5px;">
+          <% } %>
+          <label for="edit-image">Replace Image (Cloudinary)</label>
+          <input type="file" id="edit-image" name="image" accept="image/*" style="padding: 5px; border: 1px solid #ccc; border-radius: 5px; width: 100%; background: #fff;">
+          <small style="color: #666;">Leave empty to keep the current image.</small>
+        </div>
+      </div>
+      <div class="admin-actions" style="gap: 10px;">
+        <button type="submit" class="admin-btn admin-btn-submit">Update Item</button>
+        <a href="/admin/menu" class="admin-btn admin-btn-cancel">Cancel</a>
+      </div>
+    </form>
+  </div>
+
+</body>
+</html>

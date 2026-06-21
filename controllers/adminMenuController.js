@@ -20,8 +20,14 @@ const getMenuItems = async (req, res) => {
 // ─── Add Menu Item ───────────────────────────────────────────────
 const addMenuItem = async (req, res) => {
     try {
-        const { name, description, price, category, image } = req.body;
+        const { name, description, price, category } = req.body;
         
+        // If multer successfully uploaded the file to Cloudinary, it attaches the secure URL to req.file.path
+        let imageUrl = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800"; // default placeholder
+        if (req.file && req.file.path) {
+            imageUrl = req.file.path;
+        }
+
         // Find the default restaurant (since we only have one for now)
         let restaurant = await Restaurant.findOne();
         if (!restaurant) {
@@ -35,7 +41,7 @@ const addMenuItem = async (req, res) => {
             description,
             price: parseFloat(price),
             category: category || "Main Course",
-            image: image || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800" // default placeholder
+            image: imageUrl
         });
 
         await newItem.save();
@@ -72,15 +78,21 @@ const editMenuItemDisplay = async (req, res) => {
 // ─── Process Edit Form ───────────────────────────────────────────
 const editMenuItem = async (req, res) => {
     try {
-        const { name, description, price, category, image } = req.body;
+        const { name, description, price, category } = req.body;
         
-        await MenuItem.findByIdAndUpdate(req.params.id, {
+        let updateData = {
             name,
             description,
             price: parseFloat(price),
-            category,
-            image
-        });
+            category
+        };
+
+        // If a new image was uploaded, attach it to the update data
+        if (req.file && req.file.path) {
+            updateData.image = req.file.path;
+        }
+
+        await MenuItem.findByIdAndUpdate(req.params.id, updateData);
 
         req.flash('success', 'Menu item updated successfully!');
         res.redirect('/admin/menu');

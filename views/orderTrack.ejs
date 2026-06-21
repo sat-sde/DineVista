@@ -1,0 +1,201 @@
+<html lang="en">
+<%- include("./partials/head.ejs") %>
+<style>
+  .track-container {
+    max-width: 800px;
+    margin: 40px auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  .track-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .track-status-box {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 30px;
+  }
+  .track-status-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+  .track-updated {
+    font-size: 14px;
+    color: #777;
+    margin-top: 10px;
+  }
+  
+  /* Progress Bar */
+  .progress-container {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 40px;
+  }
+  .progress-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    height: 4px;
+    width: 100%;
+    background: #e0e0e0;
+    z-index: 1;
+  }
+  .progress-bar {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    height: 4px;
+    background: #28a745;
+    z-index: 2;
+    transition: width 0.5s ease-in-out;
+  }
+  .progress-step {
+    position: relative;
+    z-index: 3;
+    background: #fff;
+    border: 3px solid #e0e0e0;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.5s ease-in-out;
+  }
+  .progress-step.active {
+    border-color: #28a745;
+  }
+  .progress-step.active::after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background: #28a745;
+    border-radius: 50%;
+  }
+  .step-label {
+    position: absolute;
+    top: 40px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #777;
+    text-align: center;
+    width: 100px;
+    left: -35px;
+  }
+  .progress-step.active .step-label {
+    color: #28a745;
+  }
+</style>
+
+<body>
+  <%- include("./partials/links.ejs") %>
+
+  <div class="track-container">
+    <div class="track-header">
+      <h2>Order Tracking</h2>
+      <p>Order ID: <strong><%= order._id %></strong></p>
+    </div>
+
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar" style="width: 0%;"></div>
+      
+      <div class="progress-step" id="step-Placed">
+        <div class="step-label">Placed</div>
+      </div>
+      <div class="progress-step" id="step-Preparing">
+        <div class="step-label">Preparing</div>
+      </div>
+      <div class="progress-step" id="step-Out-for-Delivery">
+        <div class="step-label">Out for Delivery</div>
+      </div>
+      <div class="progress-step" id="step-Delivered">
+        <div class="step-label">Delivered</div>
+      </div>
+    </div>
+
+    <div class="track-status-box">
+      <div class="track-status-text" id="statusText">Loading status...</div>
+      <div class="track-updated" id="updatedText">Last updated: Just now</div>
+    </div>
+    
+    <div style="text-align: center;">
+      <a href="/User/Profile" style="text-decoration: none; color: #007bff; font-weight: bold;">&larr; Back to Profile</a>
+    </div>
+  </div>
+
+  <script>
+    const orderId = "<%= order._id %>";
+    const initialStatus = "<%= order.orderStatus %>";
+    
+    // Status progression map
+    const statusMap = {
+      "Placed": 0,
+      "Preparing": 33,
+      "Out for Delivery": 66,
+      "Delivered": 100
+    };
+
+    function updateUI(status, timestamp) {
+      // Update text
+      document.getElementById('statusText').innerText = status;
+      
+      if (timestamp) {
+        const date = new Date(timestamp);
+        document.getElementById('updatedText').innerText = 'Last updated: ' + date.toLocaleTimeString();
+      }
+
+      // Update progress bar width
+      const progressPercent = statusMap[status] !== undefined ? statusMap[status] : 0;
+      document.getElementById('progressBar').style.width = progressPercent + '%';
+
+      // Update node dots
+      const steps = ["Placed", "Preparing", "Out for Delivery", "Delivered"];
+      let passed = true;
+      
+      steps.forEach(step => {
+        // ID safe parsing for 'Out for Delivery' -> 'Out-for-Delivery'
+        const stepId = 'step-' + step.replace(/ /g, '-');
+        const node = document.getElementById(stepId);
+        
+        if (passed) {
+          node.classList.add('active');
+        } else {
+          node.classList.remove('active');
+        }
+        
+        if (step === status) {
+          passed = false; // All subsequent steps are not yet active
+        }
+      });
+    }
+
+    // Set initial UI based on EJS rendering
+    updateUI(initialStatus, "<%= order.updatedAt %>");
+
+    // Real-Time AJAX Polling Logic
+    function pollOrderStatus() {
+      fetch('/api/orders/status/' + orderId)
+        .then(response => response.json())
+        .then(data => {
+          if (data && data.status) {
+            updateUI(data.status, data.updatedAt);
+          }
+        })
+        .catch(err => console.error("Polling error:", err));
+    }
+
+    // Poll every 5 seconds
+    setInterval(pollOrderStatus, 5000);
+  </script>
+</body>
+</html>

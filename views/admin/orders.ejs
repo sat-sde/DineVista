@@ -1,0 +1,91 @@
+<html lang="en">
+<%- include("../partials/head.ejs") %>
+
+<body>
+  <%- include("../partials/links.ejs") %>
+
+  <% if (typeof success !== 'undefined' && success && success.length > 0) { %>
+    <div class="alert alert-success"><%= success %></div>
+  <% } %>
+  <% if (typeof err !== 'undefined' && err && err.length > 0) { %>
+    <div class="alert alert-danger"><%= err %></div>
+  <% } %>
+
+  <h2>Admin Panel</h2>
+
+  <%- include("adminSubnav.ejs") %>
+
+  <div class="admin-card">
+    <h3>Manage Orders (<%= orders.length %>)</h3>
+    <div class="admin-table-wrapper">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Order Date</th>
+            <th>Customer</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th>Update Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (orders.length === 0) { %>
+            <tr><td colspan="7" class="admin-empty">No orders found.</td></tr>
+          <% } %>
+          <% orders.forEach(order => { %>
+            <tr>
+              <td><%= new Date(order.createdAt).toLocaleDateString() %><br>
+                  <small style="color:#777;"><%= new Date(order.createdAt).toLocaleTimeString() %></small></td>
+              <td>
+                <% if (order.userId) { %>
+                  <strong><%= order.userId.first_name %> <%= order.userId.last_name %></strong><br>
+                  <small style="color:#777;"><%= order.userId.email %></small>
+                <% } else { %>
+                  <em style="color:#999;">Deleted User</em>
+                <% } %>
+              </td>
+              <td>
+                <ul style="margin: 0; padding-left: 18px;">
+                  <% order.items.forEach(item => { %>
+                    <li><%= item.quantity %>× <%= item.name %></li>
+                  <% }) %>
+                </ul>
+              </td>
+              <td><strong>$<%= order.totalAmount.toFixed(2) %></strong></td>
+              <td>
+                <%
+                  let payClass = order.paymentStatus === 'Paid' ? 'admin-status-paid' : 'admin-status-pending';
+                %>
+                <span class="admin-status <%= payClass %>"><%= order.paymentStatus %></span>
+              </td>
+              <td>
+                <%
+                  let statusClass = 'admin-status-placed';
+                  if (order.orderStatus === 'Preparing') statusClass = 'admin-status-preparing';
+                  if (order.orderStatus === 'Out for Delivery') statusClass = 'admin-status-out';
+                  if (order.orderStatus === 'Delivered') statusClass = 'admin-status-delivered';
+                %>
+                <span class="admin-status <%= statusClass %>"><%= order.orderStatus %></span>
+              </td>
+              <td>
+                <form action="/admin/orders/update/<%= order._id %>" method="POST" class="admin-status-form">
+                  <select name="orderStatus">
+                    <option value="Placed" <%= order.orderStatus === 'Placed' ? 'selected' : '' %>>Placed</option>
+                    <option value="Preparing" <%= order.orderStatus === 'Preparing' ? 'selected' : '' %>>Preparing</option>
+                    <option value="Out for Delivery" <%= order.orderStatus === 'Out for Delivery' ? 'selected' : '' %>>Out for Delivery</option>
+                    <option value="Delivered" <%= order.orderStatus === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+                  </select>
+                  <button type="submit" class="admin-btn admin-btn-update">Update</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</body>
+</html>

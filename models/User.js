@@ -15,9 +15,20 @@ const userSchema = new schema({
         required: true,
         unique: true
     },
+    googleId: {
+        type: String,
+        sparse: true,
+        unique: true
+    },
+    profilePicture: {
+        type: String
+    },
     password: {
         type: String,
-        required: true
+        required: function() {
+            // Password is only required if googleId is not present
+            return !this.googleId;
+        }
     },
     role: {
         type: String,

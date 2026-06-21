@@ -193,7 +193,7 @@ const foodItems = [
         name: "Mushroom Risotto",
         price: "$12.99",
         desc: "Creamy arborio rice cooked with sautéed mushrooms, garlic, and Parmesan cheese, finished with a drizzle of truffle oil. A rich, savory dish that's both comforting and indulgent.",
-        image: "https://ik.imagekit.io/munchery/blog/tr:w-768/porcini-mushroom-risotto-recipe.jpeg"
+        image: "https://images.unsplash.com/photo-1626844131082-256783844137?w=800"
       },
       {
         id: "29",

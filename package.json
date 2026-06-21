@@ -2,7 +2,7 @@
   "name": "node-js-project",
   "version": "1.0.0",
   "description": "a restaurant service website",
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.41.3",
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.6",
     "dotenv": "^17.4.2",
@@ -20,7 +21,11 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.2.3",
     "morgan": "^1.10.0",
+    "multer": "^2.2.0",
+    "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^9.0.1",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
     "stripe": "^22.2.2"
   }
 }
