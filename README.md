@@ -118,3 +118,4 @@ Then open:
 - **Hardcoded secrets**: JWT signing secret is hardcoded (demo-only). Do not use as-is for production.
 
 
+# DineVista
