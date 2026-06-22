@@ -117,5 +117,3 @@ Then open:
 - **Cart storage**: the cart is stored in-memory in a singleton (`models/Cart.js`), so it is not user/session-specific and will reset on server restart.
 - **Hardcoded secrets**: JWT signing secret is hardcoded (demo-only). Do not use as-is for production.
 
-
-# DineVista
